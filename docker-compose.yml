@@ -1,0 +1,94 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: finpredict_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_NAME=FinPredict_XGBoost
+      - MODEL_STAGE=Production
+    depends_on:
+      - mlflow
+    volumes:
+      - ./data:/data
+      - ./backend/logs:/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - finpredict-net
+
+  frontend:
+    build: ./frontend
+    container_name: finpredict_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - finpredict-net
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.8.0
+    container_name: finpredict_mlflow
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlflow/artifacts
+    volumes:
+      - ./mlflow_data:/mlflow
+    networks:
+      - finpredict-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: finpredict_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - finpredict-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: finpredict_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - finpredict-net
+
+  airflow:
+    image: apache/airflow:2.7.0
+    container_name: finpredict_airflow
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./mlops/data_pipeline:/opt/airflow/dags
+      - ./data:/data
+    command: standalone
+    networks:
+      - finpredict-net
+
+networks:
+  finpredict-net:
+    driver: bridge

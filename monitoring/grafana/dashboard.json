@@ -1,0 +1,27 @@
+{
+  "title": "FinPredict MLOps Dashboard",
+  "uid": "finpredict-dashboard",
+  "panels": [
+    {
+      "title": "Prediction Latency (seconds)",
+      "type": "graph",
+      "targets": [{"expr": "finpredict_prediction_latency_seconds"}]
+    },
+    {
+      "title": "Total Predictions",
+      "type": "stat",
+      "targets": [{"expr": "finpredict_predictions_total"}]
+    },
+    {
+      "title": "Successful Predictions",
+      "type": "stat",
+      "targets": [{"expr": "finpredict_predictions_total{status='success'}"}]
+    },
+    {
+      "title": "Error Rate",
+      "type": "gauge",
+      "targets": [{"expr": "rate(finpredict_predictions_total{status='error'}[5m])"}]
+    }
+  ],
+  "refresh": "10s"
+}

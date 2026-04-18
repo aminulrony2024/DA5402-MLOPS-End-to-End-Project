@@ -1,0 +1,12 @@
+name: FinPredict
+
+entry_points:
+  train:
+    parameters:
+      n_estimators: {type: int, default: 200}
+      max_depth: {type: int, default: 6}
+      learning_rate: {type: float, default: 0.1}
+    command: "python mlops/training/train.py --n_estimators {n_estimators} --max_depth {max_depth} --learning_rate {learning_rate}"
+
+  preprocess:
+    command: "python mlops/data_pipeline/data_ingestion.py"

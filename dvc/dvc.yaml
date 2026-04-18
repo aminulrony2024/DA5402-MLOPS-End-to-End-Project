@@ -1,0 +1,80 @@
+# ================================================================
+# FinPredict DVC Pipeline
+# Two clearly defined data versions:
+#   VERSION 1 (Raw)         → data/raw/Loan_Dataset.csv
+#   VERSION 2 (Processed)   → data/processed/train.csv
+#                             data/processed/test.csv
+# ================================================================
+
+stages:
+
+  # ── VERSION 1 INPUT ──────────────────────────────────────────
+  # Raw data is tracked via: dvc add data/raw/Loan_Dataset.csv
+  # The stages below transform it into Version 2
+
+  data_ingestion:
+    cmd: python mlops/data_pipeline/data_ingestion.py
+    desc: "Load raw CSV and stage it for validation"
+    deps:
+      - data/raw/Loan_Dataset.csv
+      - mlops/data_pipeline/data_ingestion.py
+    outs:
+      - data/processed/staged.csv
+
+  data_validation:
+    cmd: python mlops/data_pipeline/data_validation.py
+    desc: "Validate schema, nulls, row count and target column"
+    deps:
+      - data/processed/staged.csv
+      - mlops/data_pipeline/data_validation.py
+
+  data_cleaning:
+    cmd: python mlops/data_pipeline/data_cleaning.py
+    desc: "Rename columns, drop unused cols, clip outliers"
+    deps:
+      - data/processed/staged.csv
+      - mlops/data_pipeline/data_cleaning.py
+    outs:
+      - data/processed/cleaned.csv
+
+  feature_engineering:
+    cmd: python mlops/data_pipeline/feature_engineering.py
+    desc: "Derive Debt_to_Income, Loan_to_Income, Expense_to_Income ratios"
+    deps:
+      - data/processed/cleaned.csv
+      - mlops/data_pipeline/feature_engineering.py
+    outs:
+      - data/processed/featured.csv
+      - data/features/feature_baseline.json
+
+  encode_and_scale:
+    cmd: python mlops/data_pipeline/encode_and_scale.py
+    desc: "Label encode, one-hot encode, StandardScaler on numeric cols"
+    deps:
+      - data/processed/featured.csv
+      - mlops/data_pipeline/encode_and_scale.py
+    outs:
+      - data/processed/encoded.csv
+      - data/features/scaler.pkl
+
+  # ── PRODUCES VERSION 2 ───────────────────────────────────────
+  train_test_split:
+    cmd: python mlops/data_pipeline/split_data.py
+    desc: "80/20 stratified split — VERSION 2 final outputs"
+    deps:
+      - data/processed/encoded.csv
+      - mlops/data_pipeline/split_data.py
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  train_model:
+    cmd: python mlops/training/train.py --n_estimators 200 --max_depth 6 --learning_rate 0.1
+    desc: "Train XGBoost and log to MLflow"
+    deps:
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - mlops/training/train.py
+    metrics:
+      - metrics.json:
+          cache: false
