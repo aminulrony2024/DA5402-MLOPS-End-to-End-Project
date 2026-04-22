@@ -5,8 +5,8 @@ import mlflow.sklearn
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
-TRAIN_PATH = "/data/processed/train.csv"
-TEST_PATH  = "/data/processed/test.csv"
+TRAIN_PATH = "data/processed/train.csv"
+TEST_PATH  = "data/processed/test.csv"
 TARGET     = "Loan_Approval_Status"
 
 df_train = pd.read_csv(TRAIN_PATH)

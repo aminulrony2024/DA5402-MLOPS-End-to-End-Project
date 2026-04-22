@@ -1,0 +1,4 @@
+# DVC-managed files — do not track these with Git
+# Git tracks the .dvc pointer files instead
+
+/Loan_Dataset.csv

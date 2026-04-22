@@ -12,10 +12,10 @@ from sklearn.model_selection import train_test_split
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RAW_PATH    = "/data/raw/Loan_Dataset.csv"
-TRAIN_PATH  = "/data/processed/train.csv"
-TEST_PATH   = "/data/processed/test.csv"
-SCALER_PATH = "/data/features/scaler.pkl"
+RAW_PATH    = "data/raw/Loan_Dataset.csv"
+TRAIN_PATH  = "data/processed/train.csv"
+TEST_PATH   = "data/processed/test.csv"
+SCALER_PATH = "data/features/scaler.pkl"
 TARGET      = "Loan_Approval_Status"
 
 

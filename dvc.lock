@@ -1,0 +1,105 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python mlops/data_pipeline/data_ingestion.py
+    deps:
+    - path: data/raw/Loan_Dataset.csv
+      hash: md5
+      md5: b14dbfd7431ea362cb5b8d02dc095dca
+      size: 7610930
+    - path: mlops/data_pipeline/data_ingestion.py
+      hash: md5
+      md5: 2c427d2839d104c1137bdda8e6207e9b
+      size: 608
+    outs:
+    - path: data/processed/staged.csv
+      hash: md5
+      md5: a0c6f7cca7e7358f274ee567cc83c251
+      size: 7558920
+  data_validation:
+    cmd: python mlops/data_pipeline/data_validation.py
+    deps:
+    - path: data/processed/staged.csv
+      hash: md5
+      md5: a0c6f7cca7e7358f274ee567cc83c251
+      size: 7558920
+    - path: mlops/data_pipeline/data_validation.py
+      hash: md5
+      md5: daed7bc43aa6fc6a08a06fb38c470ff0
+      size: 1517
+  data_cleaning:
+    cmd: python mlops/data_pipeline/data_cleaning.py
+    deps:
+    - path: data/processed/staged.csv
+      hash: md5
+      md5: a0c6f7cca7e7358f274ee567cc83c251
+      size: 7558920
+    - path: mlops/data_pipeline/data_cleaning.py
+      hash: md5
+      md5: 3aa6a44778587a27c9425419005a6977
+      size: 856
+    outs:
+    - path: data/processed/cleaned.csv
+      hash: md5
+      md5: 52367c3dbdead923efaf427cbf6b6711
+      size: 7108972
+  feature_engineering:
+    cmd: python mlops/data_pipeline/feature_engineering.py
+    deps:
+    - path: data/processed/cleaned.csv
+      hash: md5
+      md5: 52367c3dbdead923efaf427cbf6b6711
+      size: 7108972
+    - path: mlops/data_pipeline/feature_engineering.py
+      hash: md5
+      md5: 71e2f95ab6769a8bb31e7edab6d34c2c
+      size: 1292
+    outs:
+    - path: data/features/feature_baseline.json
+      hash: md5
+      md5: ad5de18177e2de0d9a5aeb9bfc3aed11
+      size: 648
+    - path: data/processed/featured.csv
+      hash: md5
+      md5: 2f08397bbb426cca751b388ff4621c5b
+      size: 10150911
+  encode_and_scale:
+    cmd: python mlops/data_pipeline/encode_and_scale.py
+    deps:
+    - path: data/processed/featured.csv
+      hash: md5
+      md5: 2f08397bbb426cca751b388ff4621c5b
+      size: 10150911
+    - path: mlops/data_pipeline/encode_and_scale.py
+      hash: md5
+      md5: 8a4d7a482a96dabb95d46dac4364bdcd
+      size: 1657
+    outs:
+    - path: data/features/scaler.pkl
+      hash: md5
+      md5: 2c64b0b71bdb999d585b4f071c0a28ad
+      size: 1147
+    - path: data/processed/encoded.csv
+      hash: md5
+      md5: 942a63cd29a479553f09dd3249540768
+      size: 21027840
+  train_test_split:
+    cmd: python mlops/data_pipeline/split_data.py
+    deps:
+    - path: data/processed/encoded.csv
+      hash: md5
+      md5: 942a63cd29a479553f09dd3249540768
+      size: 21027840
+    - path: mlops/data_pipeline/split_data.py
+      hash: md5
+      md5: 34775a57f00b0f41b30a89ea70117ced
+      size: 792
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 55c8bb94a7b7b79e2159392a2af9cead
+      size: 4162332
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 76afb816a76b5c54dafb59275935f69d
+      size: 16646328

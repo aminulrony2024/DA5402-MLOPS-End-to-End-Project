@@ -1,0 +1,7 @@
+# DVC-managed files — do not track these with Git
+# Git tracks the .dvc pointer files instead
+
+/staged.csv
+/cleaned.csv
+/featured.csv
+/encoded.csv

@@ -5,8 +5,8 @@ import mlflow.xgboost
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
-TRAIN_PATH = "/data/processed/train.csv"
-TEST_PATH  = "/data/processed/test.csv"
+TRAIN_PATH = "data/processed/train.csv"
+TEST_PATH  = "data/processed/test.csv"
 TARGET     = "Loan_Approval_Status"
 
 df_train = pd.read_csv(TRAIN_PATH)
@@ -28,14 +28,18 @@ with mlflow.start_run(run_name="XGBoost_Production"):
     model.fit(X_train, y_train)
     preds = model.predict(X_test)
 
-    mlflow.log_params({"n_estimators": 200, "max_depth": 6, "learning_rate": 0.1, "model": "XGBoost"})
+    mlflow.log_params({
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1,
+        "model": "XGBoost"          # ✅ keep this — register_model.py filters on it
+    })
     mlflow.log_metrics({
         "accuracy": accuracy_score(y_test, preds),
         "f1_score": f1_score(y_test, preds),
         "roc_auc":  roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
     })
     mlflow.xgboost.log_model(
-        model, "xgboost_model",
-        registered_model_name="FinPredict_XGBoost"
+        model, "xgboost_model"      # removed registered_model_name — register_model.py handles this
     )
-    print("XGBoost experiment logged to MLflow and registered")
+    print("XGBoost experiment logged to MLflow")

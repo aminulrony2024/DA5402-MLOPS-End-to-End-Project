@@ -1,6 +1,8 @@
 version: "3.8"
 
 services:
+
+  # ── BACKEND (FastAPI + pydantic v2) ───────────────────────────
   backend:
     build: ./backend
     container_name: finpredict_backend
@@ -15,6 +17,7 @@ services:
     volumes:
       - ./data:/data
       - ./backend/logs:/logs
+      - ./mlflow_data:/mlflow
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -23,20 +26,26 @@ services:
     networks:
       - finpredict-net
 
+  # ── FRONTEND (React) ──────────────────────────────────────────
+  # ── FRONTEND (React) ──────────────────────────────────────────
   frontend:
     build: ./frontend
     container_name: finpredict_frontend
     ports:
-      - "3000:3000"
+      - "3002:3000"              # ← changed from 3000:3000
     environment:
       - REACT_APP_API_URL=http://localhost:8000
     depends_on:
       - backend
+    volumes:
+    - ./frontend:/app
+    - /app/node_modules
     networks:
       - finpredict-net
 
+  # ── MLFLOW ────────────────────────────────────────────────────
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.8.0
+    image: ghcr.io/mlflow/mlflow:v2.19.0
     container_name: finpredict_mlflow
     ports:
       - "5000:5000"
@@ -46,6 +55,7 @@ services:
     networks:
       - finpredict-net
 
+  # ── PROMETHEUS ────────────────────────────────────────────────
   prometheus:
     image: prom/prometheus:latest
     container_name: finpredict_prometheus
@@ -56,6 +66,7 @@ services:
     networks:
       - finpredict-net
 
+  # ── GRAFANA ───────────────────────────────────────────────────
   grafana:
     image: grafana/grafana:latest
     container_name: finpredict_grafana
@@ -73,18 +84,26 @@ services:
     networks:
       - finpredict-net
 
+  # ── AIRFLOW (pydantic v1 — separate from backend) ─────────────
   airflow:
-    image: apache/airflow:2.7.0
+    build: ./airflow
     container_name: finpredict_airflow
     ports:
       - "8080:8080"
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__WEBSERVER__SECRET_KEY=finpredict_secret_key_2024
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+      - GIT_PYTHON_REFRESH=quiet 
     volumes:
       - ./mlops/data_pipeline:/opt/airflow/dags
       - ./data:/data
+      - ./mlflow_data:/mlflow  
     command: standalone
     networks:
       - finpredict-net
