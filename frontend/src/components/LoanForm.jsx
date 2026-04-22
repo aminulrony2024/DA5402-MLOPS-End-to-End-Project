@@ -161,7 +161,7 @@ export default function LoanForm() {
           </label>
 
           <label className="form-label">Credit Score (300–850)
-            <input name="credit_score" type="number" value={form.credit_score}
+            <input name="credit_score" type="text" value={form.credit_score}
               onChange={handleChange} className="form-input" placeholder="e.g. 720" />
           </label>
 
