@@ -1,12 +1,37 @@
 name: FinPredict
 
+conda_env: conda.yaml
+
 entry_points:
+
+  # Entry point 1 — Full preprocessing pipeline
+  preprocess:
+    command: "python mlops/training/preprocess.py"
+
+  # Entry point 2 — Train XGBoost model
   train:
     parameters:
       n_estimators: {type: int, default: 200}
       max_depth: {type: int, default: 6}
       learning_rate: {type: float, default: 0.1}
-    command: "python mlops/training/train.py --n_estimators {n_estimators} --max_depth {max_depth} --learning_rate {learning_rate}"
+    command: "python mlops/training/train.py
+              --n_estimators {n_estimators}
+              --max_depth {max_depth}
+              --learning_rate {learning_rate}"
 
-  preprocess:
-    command: "python mlops/data_pipeline/data_ingestion.py"
+  # Entry point 3 — Evaluate production model
+  evaluate:
+    command: "python mlops/training/evaluate.py"
+
+  # Entry point 4 — Run full pipeline (preprocess + train + evaluate)
+  main:
+    parameters:
+      n_estimators: {type: int, default: 200}
+      max_depth: {type: int, default: 6}
+      learning_rate: {type: float, default: 0.1}
+    command: "python mlops/training/preprocess.py &&
+              python mlops/training/train.py
+              --n_estimators {n_estimators}
+              --max_depth {max_depth}
+              --learning_rate {learning_rate} &&
+              python mlops/training/evaluate.py"

@@ -15,6 +15,7 @@ services:
     depends_on:
       - mlflow
     volumes:
+      - ./backend:/app 
       - ./data:/data
       - ./backend/logs:/logs
       - ./mlflow_data:/mlflow
@@ -26,7 +27,6 @@ services:
     networks:
       - finpredict-net
 
-  # ── FRONTEND (React) ──────────────────────────────────────────
   # ── FRONTEND (React) ──────────────────────────────────────────
   frontend:
     build: ./frontend
@@ -63,8 +63,19 @@ services:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
     networks:
       - finpredict-net
+
+  statsd-exporter:
+    image: prom/statsd-exporter:latest
+    container_name: finpredict_statsd
+    ports:
+      - "9102:9102"
+      - "9125:9125/udp"
+    networks:
+      - finpredict-net
+
 
   # ── GRAFANA ───────────────────────────────────────────────────
   grafana:
@@ -81,6 +92,18 @@ services:
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
+    networks:
+      - finpredict-net
+  # ── ALERTMANAGER ─────────────────────────────────────────────
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: finpredict_alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
     networks:
       - finpredict-net
 

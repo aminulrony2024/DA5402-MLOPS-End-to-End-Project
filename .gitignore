@@ -24,3 +24,4 @@ node_modules/
 frontend/node_modules/
 mlruns/
 Miniconda3-*.sh
+monitoring/alertmanager.yml
