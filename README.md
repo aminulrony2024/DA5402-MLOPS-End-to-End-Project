@@ -20,7 +20,7 @@ docker-compose up --build
 ## Services
 | Service     | URL                    |
 |-------------|------------------------|
-| Frontend    | http://localhost:3000  |
+| Frontend    | http://localhost:3002  |
 | Backend API | http://localhost:8000  |
 | MLflow      | http://localhost:5000  |
 | Airflow     | http://localhost:8080  |

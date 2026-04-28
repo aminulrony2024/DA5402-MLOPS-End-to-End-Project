@@ -21,6 +21,7 @@ df_test  = pd.read_csv(TEST_PATH)
 X_train, y_train = df_train.drop(columns=[TARGET]), df_train[TARGET]
 X_test,  y_test  = df_test.drop(columns=[TARGET]),  df_test[TARGET]
 
+mlflow.set_tracking_uri("http://localhost:5000") 
 mlflow.set_experiment("FinPredict_LoanApproval")
 
 # ── Enable Autolog ──────────────────────────────────────────────
