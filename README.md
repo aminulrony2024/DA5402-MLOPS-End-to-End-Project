@@ -243,7 +243,7 @@ FinPredict/
 
 ### Step 1 — Clone and Place Dataset
 ```bash
-git clone <https://github.com/aminulrony2024/DA5402-MLOPS-End-to-End-Project>
+git clone https://github.com/aminulrony2024/DA5402-MLOPS-End-to-End-Project
 cd FinPredict
 
 # Place dataset
