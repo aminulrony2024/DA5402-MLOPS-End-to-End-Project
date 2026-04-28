@@ -243,10 +243,10 @@ FinPredict/
 
 ### Step 1 — Clone and Place Dataset
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/aminulrony2024/DA5402-MLOPS-End-to-End-Project>
 cd FinPredict
 
-# Place your dataset
+# Place dataset
 cp /path/to/Loan_Dataset.csv data/raw/Loan_Dataset.csv
 ```
 
