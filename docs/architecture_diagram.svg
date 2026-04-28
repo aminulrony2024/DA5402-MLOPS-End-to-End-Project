@@ -1,0 +1,101 @@
+<svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="#f0f4f8" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a365d">FinPredict — System Architecture</text>
+
+  <!-- ── USER BROWSER ── -->
+  <rect x="300" y="60" width="300" height="70" rx="10" fill="#2b6cb0" stroke="#1a365d" stroke-width="2"/>
+  <text x="450" y="88" text-anchor="middle" font-size="13" font-weight="bold" fill="white">User Browser</text>
+  <text x="450" y="108" text-anchor="middle" font-size="11" fill="#bee3f8">React.js Frontend — port 3000</text>
+  <text x="450" y="124" text-anchor="middle" font-size="10" fill="#bee3f8">Home | Apply | Pipeline | Manual</text>
+
+  <!-- Arrow: Frontend → Backend -->
+  <line x1="450" y1="130" x2="450" y2="168" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="460" y="153" font-size="10" fill="#4a5568">REST API / JSON</text>
+
+  <!-- ── FASTAPI BACKEND ── -->
+  <rect x="250" y="168" width="400" height="80" rx="10" fill="#1a365d" stroke="#2d3748" stroke-width="2"/>
+  <text x="450" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="white">FastAPI Backend — port 8000</text>
+  <text x="450" y="210" text-anchor="middle" font-size="10" fill="#a0aec0">POST /api/v1/predict   GET /health   GET /ready</text>
+  <text x="450" y="226" text-anchor="middle" font-size="10" fill="#a0aec0">GET /api/v1/pipeline/status   GET /metrics</text>
+  <text x="450" y="242" text-anchor="middle" font-size="10" fill="#68d391">model/predictor.py → model/preprocessor.py</text>
+
+  <!-- Arrow: Backend → MLflow -->
+  <line x1="350" y1="248" x2="210" y2="310" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="240" y="282" font-size="10" fill="#4a5568">load model</text>
+
+  <!-- Arrow: Backend → Prometheus -->
+  <line x1="650" y1="248" x2="760" y2="310" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="680" y="282" font-size="10" fill="#4a5568">/metrics</text>
+
+  <!-- ── MLFLOW ── -->
+  <rect x="60" y="310" width="200" height="70" rx="10" fill="#744210" stroke="#975a16" stroke-width="2"/>
+  <text x="160" y="334" text-anchor="middle" font-size="12" font-weight="bold" fill="white">MLflow — port 5000</text>
+  <text x="160" y="352" text-anchor="middle" font-size="10" fill="#fefcbf">Experiment Tracking</text>
+  <text x="160" y="368" text-anchor="middle" font-size="10" fill="#fefcbf">Model Registry (Production)</text>
+
+  <!-- ── PROMETHEUS ── -->
+  <rect x="640" y="310" width="200" height="70" rx="10" fill="#742a2a" stroke="#9b2c2c" stroke-width="2"/>
+  <text x="740" y="334" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Prometheus — port 9090</text>
+  <text x="740" y="352" text-anchor="middle" font-size="10" fill="#fed7d7">prediction_latency</text>
+  <text x="740" y="368" text-anchor="middle" font-size="10" fill="#fed7d7">predictions_total | error_rate</text>
+
+  <!-- Arrow: Prometheus → Grafana -->
+  <line x1="740" y1="380" x2="740" y2="430" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ── GRAFANA ── -->
+  <rect x="640" y="430" width="200" height="60" rx="10" fill="#553c9a" stroke="#44337a" stroke-width="2"/>
+  <text x="740" y="456" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Grafana — port 3001</text>
+  <text x="740" y="474" text-anchor="middle" font-size="10" fill="#e9d8fd">Real-time Dashboard</text>
+
+  <!-- ── AIRFLOW ── -->
+  <rect x="270" y="355" width="360" height="100" rx="10" fill="#234e52" stroke="#285e61" stroke-width="2"/>
+  <text x="450" y="378" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Apache Airflow — port 8080</text>
+  <text x="450" y="396" text-anchor="middle" font-size="10" fill="#81e6d9">ingest → validate → clean → features</text>
+  <text x="450" y="412" text-anchor="middle" font-size="10" fill="#81e6d9">→ encode → split → train</text>
+  <text x="450" y="428" text-anchor="middle" font-size="10" fill="#4fd1c5">7-task DAG | daily schedule | retry logic</text>
+  <text x="450" y="444" text-anchor="middle" font-size="10" fill="#4fd1c5">output: train.csv | test.csv</text>
+
+  <!-- Arrow: Airflow → MLflow -->
+  <line x1="290" y1="430" x2="200" y2="380" stroke="#4a5568" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="215" y="415" font-size="9" fill="#718096">log experiments</text>
+
+  <!-- ── GIT + DVC ── -->
+  <rect x="60" y="490" width="200" height="60" rx="10" fill="#2d3748" stroke="#4a5568" stroke-width="2"/>
+  <text x="160" y="516" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Git + DVC</text>
+  <text x="160" y="534" text-anchor="middle" font-size="10" fill="#a0aec0">Code → Git | Data → DVC</text>
+  <text x="160" y="550" text-anchor="middle" font-size="10" fill="#a0aec0">Models → MLflow Registry</text>
+
+  <!-- Arrow: DVC → Airflow -->
+  <line x1="260" y1="520" x2="290" y2="460" stroke="#4a5568" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="255" y="495" font-size="9" fill="#718096">dvc repro</text>
+
+  <!-- ── DOCKER COMPOSE ── -->
+  <rect x="60" y="570" width="780" height="38" rx="8" fill="#1a202c" stroke="#4a5568" stroke-width="1.5"/>
+  <text x="450" y="585" text-anchor="middle" font-size="11" font-weight="bold" fill="#68d391">Docker Compose — Environment Parity</text>
+  <text x="450" y="601" text-anchor="middle" font-size="10" fill="#a0aec0">frontend | backend | mlflow | airflow | prometheus | grafana</text>
+
+  <!-- Model versions under MLflow -->
+  <rect x="60" y="400" width="200" height="42" rx="8" fill="#5f370e" stroke="#975a16" stroke-width="1"/>
+  <text x="160" y="418" text-anchor="middle" font-size="10" fill="#fefcbf">3 Experiments Tracked:</text>
+  <text x="160" y="434" text-anchor="middle" font-size="10" fill="#fefcbf">LR | RF | XGBoost (Production)</text>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <!-- Legend -->
+  <rect x="60" y="448" width="10" height="10" fill="#2b6cb0"/>
+  <text x="76" y="458" font-size="9" fill="#4a5568">Frontend</text>
+  <rect x="120" y="448" width="10" height="10" fill="#1a365d"/>
+  <text x="136" y="458" font-size="9" fill="#4a5568">Backend</text>
+  <rect x="185" y="448" width="10" height="10" fill="#234e52"/>
+  <text x="201" y="458" font-size="9" fill="#4a5568">Pipeline</text>
+
+</svg>

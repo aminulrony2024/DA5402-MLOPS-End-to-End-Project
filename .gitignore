@@ -18,7 +18,6 @@ data/raw/Loan_Dataset.csv
 *.joblib
 notebooks/
 dvc_setup.sh
-docs/
 # Node modules
 node_modules/
 frontend/node_modules/
