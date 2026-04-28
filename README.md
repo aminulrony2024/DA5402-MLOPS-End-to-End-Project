@@ -214,11 +214,6 @@ FinPredict/
 │   ├── alert_rules.yml               # 4 Prometheus alert rules
 │   └── prometheus.yml                # Prometheus scrape config
 │
-├── 📁 notebooks/
-│   ├── 01_EDA.ipynb                  # Exploratory Data Analysis
-│   ├── 02_Preprocessing.ipynb        # Preprocessing experiments
-│   └── 03_Model_Comparison.ipynb    # Model comparison (LR vs RF vs XGBoost)
-│
 ├── .dvcignore                        # DVC ignore rules
 ├── .gitignore                        # Git ignore rules
 ├── conda_airflow.yaml                # Conda env for Airflow (pydantic v1)
