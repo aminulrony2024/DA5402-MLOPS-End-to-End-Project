@@ -128,16 +128,6 @@ FinPredict/
 │       ├── scaler.pkl                # Fitted StandardScaler
 │       └── feature_baseline.json    # Baseline statistics for drift detection
 │
-├── 📁 docs/                          # All graded documentation
-│   ├── architecture_diagram.svg      # System architecture diagram
-│   ├── architecture_diagram.md       # Architecture ASCII + block explanations
-│   ├── HLD.md                        # High-Level Design document
-│   ├── LLD.md                        # Low-Level Design + API specifications
-│   ├── user_manual.md                # Non-technical user guide
-│   ├── test_plan.md                  # Test plan and test cases
-│   ├── test_report.md                # Test results and pass/fail report
-│   └── viva_preparation.md          # Q&A for viva examination
-│
 ├── 📁 dvc/
 │   ├── 📁 .dvc/
 │   │   └── config                    # DVC config (nested — original location)
