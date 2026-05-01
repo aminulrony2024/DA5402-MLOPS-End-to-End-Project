@@ -1,0 +1,55 @@
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'aminulrony2024@gmail.com'
+  smtp_auth_username: 'aminulrony2024@gmail.com'
+  smtp_auth_password: 'bikfubpaucvpzray'
+  smtp_require_tls: true
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'gmail_default'
+
+  routes:
+    - match:
+        alertname: DataDriftDetected
+      receiver: 'gmail_drift'
+      group_wait: 0s
+      repeat_interval: 5m
+    - match:
+        alertname: HighErrorRate
+      receiver: 'gmail_error'
+    - match:
+        alertname: HighLatency
+      receiver: 'gmail_latency'
+    - match:
+        alertname: NoPredictions
+      receiver: 'gmail_no_predictions'
+
+receivers:
+  - name: 'gmail_default'
+    email_configs:
+      - to: 'aminulrony2024@gmail.com'
+        send_resolved: true
+
+  - name: 'gmail_drift'
+    email_configs:
+      - to: 'aminulrony2024@gmail.com'
+        send_resolved: true
+
+  - name: 'gmail_error'
+    email_configs:
+      - to: 'aminulrony2024@gmail.com'
+        send_resolved: true
+
+  - name: 'gmail_latency'
+    email_configs:
+      - to: 'aminulrony2024@gmail.com'
+        send_resolved: true
+
+  - name: 'gmail_no_predictions'
+    email_configs:
+      - to: 'aminulrony2024@gmail.com'
+        send_resolved: true

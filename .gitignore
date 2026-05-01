@@ -11,16 +11,11 @@ build/
 node_modules/
 *.log
 mlflow_data/
-data/processed/train.csv
-data/features/
-data/raw/Loan_Dataset.csv
 *.pkl
 *.joblib
-notebooks/
 dvc_setup.sh
 # Node modules
 node_modules/
 frontend/node_modules/
 mlruns/
 Miniconda3-*.sh
-monitoring/alertmanager.yml

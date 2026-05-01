@@ -456,20 +456,6 @@ tests/test_preprocessor.py::test_gender_encoded_correctly  PASSED
 
 ---
 
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| `docs/architecture_diagram.svg` | Full system architecture diagram |
-| `docs/HLD.md` | High-Level Design — design choices and rationale |
-| `docs/LLD.md` | Low-Level Design — API endpoint I/O specifications |
-| `docs/user_manual.md` | Non-technical user guide |
-| `docs/test_plan.md` | Test plan and test cases |
-| `docs/test_report.md` | Test results with pass/fail status |
-| `docs/viva_preparation.md` | Q&A for viva examination |
-| `SETUP.md` | Step-by-step setup and deployment guide |
-
----
 
 ## 🏗 Architecture
 
